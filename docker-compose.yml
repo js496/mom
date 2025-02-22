@@ -67,16 +67,17 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /path/to/models:/app/model
+      - /path/to/models:/app/model  # Mount your model directory
     environment:
       - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True  # Reduce memory fragmentation
     command: [
-      "--model", "neuralmagic/DeepSeek-R1-Distill-Llama-70B-FP8-dynamic",
-      "--gpu-memory-utilization", "0.8",  # Reduce GPU memory usage
+      "--model", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",  # Use the correct model name
+      "--gpu-memory-utilization", "0.8",  # Adjust based on your GPU memory
       "--max-num-seqs", "32",  # Limit concurrent sequences
       "--max-num-batched-tokens", "1024",  # Limit batch size
-      "--quantization", "bitsandbytes",  # Use BitsAndBytes quantization
-      "--load-format", "bitsandbytes",  # Explicitly set load format
+      "--quantization", "compressed-tensors",  # Match the model's quantization method
+      "--load-format", "compressed-tensors",  # Match the model's load format
+      "--dtype", "bfloat16",  # Use bfloat16 as specified in the model config
       "--cpu-offload-gb", "4"  # Offload 4 GB to CPU
     ]
     restart: unless-stopped
